@@ -1,122 +1,61 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { Provider } from 'react-redux'
+import { useSelector } from 'react-redux'
+import store from './app/store'
+import SearchBar from './components/SearchBar'
+import UserCard from './components/UserCard'
+import RepoList from './components/RepoList'
 
-function App() {
-  const [count, setCount] = useState(0)
+const GitHubSearch = () => {
+    const { user, repos, error, searchQuery } = useSelector((state) => state.github)
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    return (
+        <div className="min-h-screen bg-gray-50 py-12 px-4">
+            <div className="max-w-2xl mx-auto space-y-6">
+
+                {/* Header */}
+                <div className="text-center">
+                    <h1 className="text-3xl font-bold text-gray-900">
+                        GitHub User Search
+                    </h1>
+                    <p className="text-gray-500 mt-2">
+                        Powered by Redux Saga
+                    </p>
+                </div>
+
+                {/* Search */}
+                <SearchBar />
+
+                {/* Error */}
+                {error && (
+                    <div className="bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm text-center">
+                        {error}
+                    </div>
+                )}
+
+                {/* Results */}
+                {user && (
+                    <div className="space-y-4">
+                        <UserCard user={user} />
+                        <RepoList repos={repos} />
+                    </div>
+                )}
+
+                {/* Empty state */}
+                {!user && !error && !searchQuery && (
+                    <div className="text-center text-gray-400 py-12">
+                        Search for a GitHub username to get started
+                    </div>
+                )}
+
+            </div>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    )
 }
+
+const App = () => (
+    <Provider store={store}>
+        <GitHubSearch />
+    </Provider>
+)
 
 export default App
